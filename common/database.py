@@ -1,7 +1,10 @@
+import dataclasses
 import os
 
 import psycopg2
 import psycopg2.extras
+
+import model
 
 
 def get_connection(
@@ -82,3 +85,23 @@ def _set_timestamp(
     # necessary since we have to differentiate between timestamp on runtime and timestamp in database
     target.timestamp = 'now()'
     return target
+
+
+def insert_component_frame(
+    conn,
+    component_frame: model.ComponentFrame,
+):
+    statement = "INSERT INTO ComponentFrame " \
+                "VALUES (%s, %s, %s, %s, %s)"
+
+    _set_timestamp(component_frame)
+    values = dataclasses.astuple(component_frame)
+
+    _execute(
+        conn=conn,
+        statement=statement,
+        values=values,
+        print_exception=True,
+    )
+
+    conn.commit()
