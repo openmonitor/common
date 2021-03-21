@@ -111,7 +111,7 @@ def select_next_frame_id(
     component: str,
 ):
     statement = "SELECT frame FROM componentFrame " \
-                "WHERE component = %s"
+                "WHERE component = %s ORDER BY frame DESC"
     values = (component,)
 
     cur = _execute(
@@ -122,7 +122,7 @@ def select_next_frame_id(
 
     conn.commit()
     try:
-        return int(cur.fetchone()[-1]) + 1
+        return int(cur.fetchone()[0]) + 1
     except:
         # if no componentFrame is present
         return 0
