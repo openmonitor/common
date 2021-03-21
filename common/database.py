@@ -94,7 +94,6 @@ def insert_component_frame(
     statement = "INSERT INTO ComponentFrame " \
                 "VALUES (%s, %s, %s, %s, %s)"
 
-    _set_timestamp(component_frame)
     values = dataclasses.astuple(component_frame)
 
     _execute(
