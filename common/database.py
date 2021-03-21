@@ -91,7 +91,7 @@ def insert_component_frame(
     conn,
     component_frame: model.ComponentFrame,
 ):
-    statement = "INSERT INTO ComponentFrame " \
+    statement = "INSERT INTO ComponentFrame (component, timestamp, reachable, responseTime)" \
                 "VALUES (%s, %s, %s, %s)"
 
     # exclude frame, it's incremented by database
