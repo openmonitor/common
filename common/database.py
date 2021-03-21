@@ -92,9 +92,15 @@ def insert_component_frame(
     component_frame: model.ComponentFrame,
 ):
     statement = "INSERT INTO ComponentFrame " \
-                "VALUES (%s, %s, %s, %s, %s)"
+                "VALUES (%s, %s, %s, %s)"
 
-    values = dataclasses.astuple(component_frame)
+    # exclude frame, it's incremented by database
+    values = (
+        component_frame.component,
+        component_frame.timestamp,
+        component_frame.reachable,
+        component_frame.responseTime,
+    )
 
     _execute(
         conn=conn,
@@ -104,25 +110,3 @@ def insert_component_frame(
     )
 
     conn.commit()
-
-
-def select_next_frame_id(
-    conn,
-    component: str,
-):
-    statement = "SELECT frame FROM componentFrame " \
-                "WHERE component = %s ORDER BY frame DESC"
-    values = (component,)
-
-    cur = _execute(
-        conn=conn,
-        statement=statement,
-        values=values,
-    )
-
-    conn.commit()
-    try:
-        return int(cur.fetchone()[0]) + 1
-    except:
-        # if no componentFrame is present
-        return 0
