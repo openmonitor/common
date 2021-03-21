@@ -122,7 +122,7 @@ def select_next_frame_id(
 
     conn.commit()
     try:
-        return int(cur.fetchone()[0]) + 1
+        return int(cur.fetchone()[-1]) + 1
     except:
         # if no componentFrame is present
         return 0
