@@ -107,11 +107,11 @@ def insert_component_frame(
     conn.commit()
 
 
-def select_frame_id(
+def select_next_frame_id(
     conn,
     component: str,
 ):
-    statement = "SELECT frameId FROM componentFrames " \
+    statement = "SELECT frame FROM componentFrame " \
                 "WHERE component = %s"
     values = (component,)
 
@@ -123,7 +123,7 @@ def select_frame_id(
 
     conn.commit()
     try:
-        return cur.fetchone()[0]
+        return int(cur.fetchone()[0]) + 1
     except:
         # if no componentFrame is present
         return 0
