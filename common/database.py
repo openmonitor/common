@@ -1,9 +1,13 @@
+import logging
 import os
 
 import psycopg2
 import psycopg2.extras
 
 import model
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_connection(
@@ -63,6 +67,8 @@ def _execute(
     """
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     try:
+        logger.debug(f'{statement=}')
+        logger.debug(f'{values=}')
         cur.execute(statement, values)
     except psycopg2.Error as e:
         if print_exception:
