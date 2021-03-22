@@ -21,6 +21,7 @@ class ComponentConfig:
     ref: str
     expectedTime: str
     timeout: str
+    deleteAfter: str
 
 
 @dataclass(frozen=True)
