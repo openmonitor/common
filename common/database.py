@@ -115,3 +115,36 @@ def insert_component_frame(
     )
 
     conn.commit()
+
+
+def _build_delete_outdated_component_frames_interval(
+    delete_after: str,
+) -> str:
+    interval_translation = {
+        'm': 'minutes',
+        'h': 'hours',
+        'd': 'days',
+    }
+    interval = delete_after[:-1] + ' ' + delete_after[-1]
+    for k, v in interval_translation.items():
+        logger.debug(f'replace on {interval=}, {k=} with {v=}')
+        interval = interval.replace(k, v)
+    return interval
+
+
+def delete_outdated_component_frames(
+    cc: model.ComponentConfig,
+    conn,
+):
+    interval = _build_delete_outdated_component_frames_interval(
+        delete_after=cc.deleteAfter,
+    )
+    stmt = 'DELETE FROM componentframe WHERE timestamp < NOW() - INTERVAL %s'
+
+    _execute(
+        conn=conn,
+        statement=stmt,
+        values=(interval, ),
+    )
+
+    conn.commit()
