@@ -155,7 +155,7 @@ def insert_component(
     conn,
     component: model.Component,
 ):
-    statement = "INSERT INTO Component" \
+    statement = "INSERT INTO Component " \
                 "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
 
     values = (dataclasses.astuple(component))
@@ -174,7 +174,7 @@ def insert_system(
     conn,
     system: model.System,
 ):
-    statement = "INSERT INTO System" \
+    statement = "INSERT INTO System " \
                 "VALUES (%s, %s, %s)"
 
     values = (dataclasses.astuple(system))
