@@ -46,5 +46,5 @@ class Component:
     statusEndpoint: str
     system: str
     ref: str
-    expectedTime: int
-
+    expectedTime: str
+    timeout: str
