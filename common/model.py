@@ -29,3 +29,22 @@ class SystemConfig:
     id: str
     name: str
     ref: str
+
+
+@dataclass(frozen=True)
+class System:
+    system: str
+    name: str
+    ref: str
+
+
+@dataclass(frozen=True)
+class Component:
+    component: str
+    name: str
+    baseUrl: str
+    statusEndpoint: str
+    system: str
+    ref: str
+    expectedTime: int
+

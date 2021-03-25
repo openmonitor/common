@@ -1,3 +1,4 @@
+import dataclasses
 import logging
 import os
 
@@ -145,6 +146,44 @@ def delete_outdated_component_frames(
         conn=conn,
         statement=stmt,
         values=(interval, ),
+    )
+
+    conn.commit()
+
+
+def insert_component(
+    conn,
+    component: model.Component,
+):
+    statement = "INSERT INTO Component" \
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+
+    values = (dataclasses.astuple(component))
+
+    _execute(
+        conn=conn,
+        statement=statement,
+        values=values,
+        print_exception=True,
+    )
+
+    conn.commit()
+
+
+def insert_system(
+    conn,
+    system: model.System,
+):
+    statement = "INSERT INTO System" \
+                "VALUES (%s, %s, %s)"
+
+    values = (dataclasses.astuple(system))
+
+    _execute(
+        conn=conn,
+        statement=statement,
+        values=values,
+        print_exception=True,
     )
 
     conn.commit()

@@ -84,8 +84,14 @@ def default_fmt_string(print_thread_id: bool=False):
     return f'%(asctime)s [%(levelprefix)s] {"TID:%(thread)d " if ptid else ""}%(name)s: %(message)s'
 
 
-def strip_timeout_str_to_int(
+def strip_time_str_to_int(
     timeout_str: str,
+    ms=False,
+    s=False,
+    m=False,
+    h=False,
+    d=False,
 ) -> int:
-    timeout_str = timeout_str.replace('ms', '')
-    return int(timeout_str.replace('s', ''))
+    for e in (ms, s, m, h ,d):
+        timeout_str = timeout_str.replace(e, '')
+    return int(timeout_str)
