@@ -92,6 +92,14 @@ def strip_time_str_to_int(
     h=False,
     d=False,
 ) -> int:
-    for e in (ms, s, m, h ,d):
-        timeout_str = timeout_str.replace(e, '')
+    timeunits = {
+        'ms': ms,
+        's': s,
+        'm': m,
+        'h': h,
+        'd': d,
+    }
+    for k, v in timeunits.items():
+        if v:
+            timeout_str = timeout_str.replace(k, '')
     return int(timeout_str)
