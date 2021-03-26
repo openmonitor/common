@@ -128,7 +128,6 @@ def _build_delete_outdated_component_frames_interval(
     }
     interval = delete_after[:-1] + ' ' + delete_after[-1]
     for k, v in interval_translation.items():
-        logger.debug(f'replace on {interval=}, {k=} with {v=}')
         interval = interval.replace(k, v)
     return interval
 
@@ -178,6 +177,97 @@ def insert_system(
                 "VALUES (%s, %s, %s)"
 
     values = (dataclasses.astuple(system))
+
+    _execute(
+        conn=conn,
+        statement=statement,
+        values=values,
+        print_exception=True,
+    )
+
+    conn.commit()
+
+
+def select_component(
+    conn,
+    component: str,
+) -> model.Component:
+
+    statement = "SELECT * FROM component " \
+                "WHERE component = %s"
+    values = (component_name,)
+
+    cur = _execute(
+        conn=conn,
+        statement=statement,
+        values=values,
+    )
+
+    conn.commit()
+    res = cur.fetchone()[0]
+    return model.Component(
+        component=res[0],
+        name=res[1],
+        baseUrl=res[2],
+        statusEndpoint=res[3],
+        system=res[4],
+        ref=res[5],
+        expectedTime=res[6],
+        timeout=res[7],
+    )
+
+
+def update_component(
+    conn,
+    component: model.Component,
+):
+    statement = "UPDATE component SET name = %s, baseUrl = %s, statusEndpoint = %s, system = %s, " \
+                "ref = %s, expectedTime = %s, timeout = % WHERE component = %s"
+
+    values = (component.name, component.baseUrl, component.baseUrl, component.system, component.ref,
+              component.expectedTime, component.timeout, component.component)
+
+    _execute(
+        conn=conn,
+        statement=statement,
+        values=values,
+        print_exception=True,
+    )
+
+    conn.commit()
+
+
+def select_system(
+    conn,
+    system: str,
+) -> model.System:
+
+    statement = "SELECT * FROM system " \
+                "WHERE system = %s"
+    values = (system,)
+
+    cur = _execute(
+        conn=conn,
+        statement=statement,
+        values=values,
+    )
+
+    conn.commit()
+    res = cur.fetchone()[0]
+    return model.System(
+        system=res[0],
+        name=res[1],
+        ref=res[2],
+    )
+
+
+def update_system(
+    conn,
+    system: model.System,
+):
+    statement = "UPDATE system SET name = %s, ref = %s WHERE system = %s"
+
+    values = (system.name, system.ref, system.system)
 
     _execute(
         conn=conn,
