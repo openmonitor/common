@@ -155,7 +155,7 @@ def insert_component(
     component: model.Component,
 ):
     statement = "INSERT INTO Component " \
-                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
     values = (dataclasses.astuple(component))
 
@@ -214,6 +214,7 @@ def select_component(
         ref=res[5],
         expectedTime=res[6],
         timeout=res[7],
+        frequency=res[8],
     )
 
 
@@ -222,10 +223,10 @@ def update_component(
     component: model.Component,
 ):
     statement = "UPDATE component SET name = %s, baseUrl = %s, statusEndpoint = %s, system = %s, " \
-                "ref = %s, expectedTime = %s, timeout = %s WHERE component = %s"
+                "ref = %s, expectedTime = %s, timeout = %s, frequency = %s WHERE component = %s"
 
     values = (component.name, component.baseUrl, component.baseUrl, component.system, component.ref,
-              component.expectedTime, component.timeout, component.component)
+              component.expectedTime, component.timeout, component.frequency, component.component)
 
     _execute(
         conn=conn,
