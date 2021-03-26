@@ -222,7 +222,7 @@ def update_component(
     component: model.Component,
 ):
     statement = "UPDATE component SET name = %s, baseUrl = %s, statusEndpoint = %s, system = %s, " \
-                "ref = %s, expectedTime = %s, timeout = % WHERE component = %s"
+                "ref = %s, expectedTime = %s, timeout = %s WHERE component = %s"
 
     values = (component.name, component.baseUrl, component.baseUrl, component.system, component.ref,
               component.expectedTime, component.timeout, component.component)
