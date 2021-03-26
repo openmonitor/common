@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import typing
 
 
 @dataclass(frozen=True)
@@ -42,9 +43,41 @@ class System:
 class Component:
     component: str
     name: str
+    frequency: str
     baseUrl: str
     statusEndpoint: str
     system: str
     ref: str
     expectedTime: str
     timeout: str
+
+
+@dataclass(frozen=True)
+class DtoComponentFrame:
+    id: int
+    timestamp: str
+    reachable: bool
+    responseTime: float
+
+
+@dataclass(frozen=True)
+class DtoSystem:
+    name: str
+    ref: str
+
+
+@dataclass(frozen=True)
+class DtoComponent:
+    name: str
+    frequency: str
+    system: str
+    ref: str
+    expectedTime: str
+    timeout: str
+    frames: typing.List[DtoComponentFrame]
+
+
+@dataclass(frozen=True)
+class DtoMonitorData:
+    components: typing.List[DtoComponent]
+    systems: typing.List[DtoSystem]

@@ -277,3 +277,48 @@ def update_system(
     )
 
     conn.commit()
+
+
+def select_components(
+    conn,
+):
+    statement = "SELECT * FROM component"
+
+    cur = _execute(
+        conn=conn,
+        statement=statement,
+        values=(),
+    )
+
+    conn.commit()
+    return cur.fetchall()
+
+
+def select_systems(
+    conn,
+):
+    statement = "SELECT * FROM system"
+
+    cur = _execute(
+        conn=conn,
+        statement=statement,
+        values=(),
+    )
+
+    conn.commit()
+    return cur.fetchall()
+
+
+def select_component_frames(
+    conn,
+):
+    statement = "SELECT * FROM componentframe"
+
+    cur = _execute(
+        conn=conn,
+        statement=statement,
+        values=(),
+    )
+
+    conn.commit()
+    return cur.fetchall()
