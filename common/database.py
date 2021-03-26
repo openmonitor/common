@@ -195,7 +195,7 @@ def select_component(
 
     statement = "SELECT * FROM component " \
                 "WHERE component = %s"
-    values = (component_name,)
+    values = (component,)
 
     cur = _execute(
         conn=conn,
