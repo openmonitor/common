@@ -43,13 +43,13 @@ class System:
 class Component:
     component: str
     name: str
-    frequency: str
     baseUrl: str
     statusEndpoint: str
     system: str
     ref: str
     expectedTime: str
     timeout: str
+    frequency: str
 
 
 @dataclass(frozen=True)
