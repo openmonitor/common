@@ -1,6 +1,7 @@
 import dataclasses
 import logging
 import os
+import typing
 
 import psycopg2
 import psycopg2.extras
@@ -191,7 +192,7 @@ def insert_system(
 def select_component(
     conn,
     component: str,
-) -> model.Component:
+) -> typing.Union[model.Component, None]:
 
     statement = "SELECT * FROM component " \
                 "WHERE component = %s"
@@ -204,7 +205,10 @@ def select_component(
     )
 
     conn.commit()
-    res = cur.fetchone()[0]
+    try:
+        res = cur.fetchone()[0]
+    except TypeError:
+        return None
     return model.Component(
         component=res[0],
         name=res[1],
@@ -241,7 +245,7 @@ def update_component(
 def select_system(
     conn,
     system: str,
-) -> model.System:
+) -> typing.Union[model.System, None]:
 
     statement = "SELECT * FROM system " \
                 "WHERE system = %s"
@@ -254,7 +258,10 @@ def select_system(
     )
 
     conn.commit()
-    res = cur.fetchone()[0]
+    try:
+        res = cur.fetchone()[0]
+    except TypeError:
+        return None
     return model.System(
         system=res[0],
         name=res[1],
