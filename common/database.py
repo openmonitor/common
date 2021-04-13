@@ -289,7 +289,7 @@ def update_system(
 
 def select_components(
     conn,
-):
+) -> typing.List[model.Component]:
     statement = "SELECT * FROM component"
 
     cur = _execute(
@@ -299,12 +299,26 @@ def select_components(
     )
 
     conn.commit()
-    return cur.fetchall()
+    comps = cur.fetchall()
+    comp_l: typing.List[model.Component] = []
+    for c in comps:
+        comp_l.append(model.Component(
+            component=c[0],
+            name=c[1],
+            baseUrl=c[2],
+            statusEndpoint=c[3],
+            system=c[4],
+            ref=c[5],
+            expectedTime=c[6],
+            timeout=c[7],
+            frequency=c[8],
+        ))
+    return comp_l
 
 
 def select_systems(
     conn,
-):
+) -> typing.List[model.System]:
     statement = "SELECT * FROM system"
 
     cur = _execute(
@@ -314,19 +328,38 @@ def select_systems(
     )
 
     conn.commit()
-    return cur.fetchall()
+    sys = cur.fetchall()
+    sys_l: typing.List[model.System] = []
+    for s in sys:
+        sys_l.append(model.System(
+            system=s[0],
+            name=s[1],
+            ref=s[2],
+        ))
+    return sys_l
 
 
-def select_component_frames(
+def select_component_frames_with_component(
     conn,
-):
-    statement = "SELECT * FROM componentframe"
+    comp: model.Component,
+) -> typing.List[model.ComponentFrame]:
+    statement = "SELECT * FROM componentframe WHERE component = %s"
 
     cur = _execute(
         conn=conn,
         statement=statement,
-        values=(),
+        values=(comp.component,),
     )
 
     conn.commit()
-    return cur.fetchall()
+    cfs = cur.fetchall()
+    cf_l: typing.List[model.ComponentFrame] = []
+    for cf in cfs:
+        cf_l.append(model.ComponentFrame(
+            component=cf[0],
+            frame=cf[1],
+            timestamp=str(cf[2]),
+            reachable=cf[3],
+            responseTime=cf[4],
+        ))
+    return cf_l
