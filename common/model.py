@@ -23,6 +23,7 @@ class ComponentConfig:
     expectedTime: str
     timeout: str
     deleteAfter: str
+    authToken: str
 
 
 @dataclass(frozen=True)
@@ -50,6 +51,7 @@ class Component:
     expectedTime: str
     timeout: str
     frequency: str
+    authToken: str
 
 
 @dataclass(frozen=True)
