@@ -205,21 +205,22 @@ def select_component(
     )
 
     conn.commit()
-    try:
-        res = cur.fetchone()[0]
-    except TypeError:
+    res = cur.fetchone()
+    logger.debug(f'{type(res)}')
+    if isinstance(res, type(None)):
         return None
-    return model.Component(
-        component=res[0],
-        name=res[1],
-        baseUrl=res[2],
-        statusEndpoint=res[3],
-        system=res[4],
-        ref=res[5],
-        expectedTime=res[6],
-        timeout=res[7],
-        frequency=res[8],
-    )
+    else:
+        return model.Component(
+            component=res[0],
+            name=res[1],
+            baseUrl=res[2],
+            statusEndpoint=res[3],
+            system=res[4],
+            ref=res[5],
+            expectedTime=res[6],
+            timeout=res[7],
+            frequency=res[8],
+        )
 
 
 def update_component(
@@ -363,3 +364,23 @@ def select_component_frames_with_component(
             responseTime=cf[4],
         ))
     return cf_l
+
+
+def insert_framecomment(
+    conn,
+    fc: model.FrameComment,
+):
+    statement = "INSERT INTO FrameComment (component, startframe, endframe, commenttext) " \
+                "VALUES (%s, %s, %s, %s)"
+
+    logger.debug(f'{fc=}')
+    values = (fc.component.component, fc.startFrame, fc.endFrame, fc.commentText)
+
+    _execute(
+        conn=conn,
+        statement=statement,
+        values=values,
+        print_exception=True,
+    )
+
+    conn.commit()

@@ -78,6 +78,21 @@ class DtoComponent:
 
 
 @dataclass(frozen=True)
+class FrameComment:
+    component: Component
+    comment: int
+    startFrame: int
+    endFrame: int
+    commentText: str
+
+
+@dataclass(frozen=True)
 class DtoMonitorData:
     components: typing.List[DtoComponent]
     systems: typing.List[DtoSystem]
+
+
+@dataclass(frozen=True)
+class ComponentComponentFrames:
+    component: Component
+    componentFrames: typing.List[ComponentFrame]
