@@ -69,6 +69,14 @@ class DtoSystem:
 
 
 @dataclass(frozen=True)
+class DtoFrameComment:
+    comment: int
+    startFrame: int
+    endFrame: int
+    commentText: str
+
+
+@dataclass(frozen=True)
 class DtoComponent:
     name: str
     frequency: str
@@ -77,6 +85,7 @@ class DtoComponent:
     expectedTime: str
     timeout: str
     frames: typing.List[DtoComponentFrame]
+    comments: typing.List[DtoFrameComment]
 
 
 @dataclass(frozen=True)

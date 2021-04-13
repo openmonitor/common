@@ -396,3 +396,30 @@ def insert_framecomment(
     )
 
     conn.commit()
+
+
+def select_framecomments_for_component(
+    conn,
+    comp: model.Component,
+) -> typing.List[model.FrameComment]:
+    statement = "SELECT * FROM framecomment WHERE component = %s"
+
+    cur = _execute(
+        conn=conn,
+        statement=statement,
+        values=(comp.component,),
+    )
+
+    conn.commit()
+    fcs = cur.fetchall()
+    fc_l: typing.List[model.FrameComment] = []
+    for fc in fcs:
+        logger.debug(f'{fc=}')
+        fc_l.append(model.FrameComment(
+            component=comp,
+            comment=fc[1],
+            startFrame=fc[2],
+            endFrame=fc[3],
+            commentText=fc[4],
+        ))
+    return fc_l
