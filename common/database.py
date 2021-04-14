@@ -98,8 +98,8 @@ def insert_component_frame(
     conn,
     component_frame: model.ComponentFrame,
 ):
-    statement = "INSERT INTO ComponentFrame (component, timestamp, reachable, responseTime)" \
-                "VALUES (%s, %s, %s, %s)"
+    statement = "INSERT INTO ComponentFrame (component, timestamp, reachable, responseTime, cpu)" \
+                "VALUES (%s, %s, %s, %s, %s)"
 
     # exclude frame, it's incremented by database
     values = (
@@ -107,6 +107,7 @@ def insert_component_frame(
         component_frame.timestamp,
         component_frame.reachable,
         component_frame.responseTime,
+        component_frame.cpu,
     )
 
     _execute(
@@ -374,6 +375,7 @@ def select_component_frames_with_component(
             timestamp=str(cf[2]),
             reachable=cf[3],
             responseTime=cf[4],
+            cpu=cf[5],
         ))
     return cf_l
 

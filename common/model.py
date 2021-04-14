@@ -9,6 +9,7 @@ class ComponentFrame:
     timestamp: str
     reachable: bool
     responseTime: float
+    cpu: float
 
 
 @dataclass(frozen=True)
@@ -60,6 +61,7 @@ class DtoComponentFrame:
     timestamp: str
     reachable: bool
     responseTime: float
+    cpu: float
 
 
 @dataclass(frozen=True)
