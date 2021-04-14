@@ -64,6 +64,7 @@ class DtoComponentFrame:
 
 @dataclass(frozen=True)
 class DtoSystem:
+    system: str
     name: str
     ref: str
 
