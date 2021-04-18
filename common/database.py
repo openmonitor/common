@@ -414,6 +414,8 @@ def select_framecomments_for_component(
 
     conn.commit()
     fcs = cur.fetchall()
+    if not fcs:
+        return None
     fc_l: typing.List[model.FrameComment] = []
     for fc in fcs:
         logger.debug(f'{fc=}')
@@ -425,3 +427,36 @@ def select_framecomments_for_component(
             commentText=fc[4],
         ))
     return fc_l
+
+
+def update_framecomment(
+    conn,
+    comp: model.Component,
+    comment: int,
+    text: str,
+):
+    statement = "UPDATE framecomment SET commenttext = %s WHERE component = %s AND comment = %s"
+
+    _execute(
+        conn=conn,
+        statement=statement,
+        values=(text, comp.component, comment),
+    )
+
+    conn.commit()
+
+
+def delete_framecomment(
+    conn,
+    comp: model.Component,
+    comment: int,
+):
+    statement = "DELETE FROM framecomment WHERE component = %s AND comment = %s"
+
+    _execute(
+        conn=conn,
+        statement=statement,
+        values=(comp.component, comment),
+    )
+
+    conn.commit()
