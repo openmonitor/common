@@ -429,6 +429,32 @@ def select_framecomments_for_component(
     return fc_l
 
 
+def select_framecomment_for_component_and_comment(
+    conn,
+    comp: model.Component,
+    comment: int
+) -> typing.Union[model.FrameComment, None]:
+    statement = "SELECT * FROM framecomment WHERE component = %s AND comment = %s"
+
+    cur = _execute(
+        conn=conn,
+        statement=statement,
+        values=(comp.component, comment),
+    )
+
+    conn.commit()
+    fc = cur.fetchone()
+    if not fc:
+        return None
+    return model.FrameComment(
+        component=comp,
+        comment=fc[1],
+        startFrame=fc[2],
+        endFrame=fc[3],
+        commentText=fc[4],
+    )
+
+
 def update_framecomment(
     conn,
     comp: model.Component,
