@@ -357,7 +357,7 @@ def select_component_frames_with_component(
     conn,
     comp: model.Component,
 ) -> typing.List[model.ComponentFrame]:
-    statement = "SELECT * FROM componentframe WHERE component = %s"
+    statement = "SELECT * FROM componentframe WHERE component = %s ORDER BY frameid"
 
     cur = _execute(
         conn=conn,
@@ -404,7 +404,7 @@ def select_framecomments_for_component(
     conn,
     comp: model.Component,
 ) -> typing.List[model.FrameComment]:
-    statement = "SELECT * FROM framecomment WHERE component = %s"
+    statement = "SELECT * FROM framecomment WHERE component = %s ORDER BY comment"
 
     cur = _execute(
         conn=conn,
