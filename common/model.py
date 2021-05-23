@@ -1,112 +1,56 @@
 from dataclasses import dataclass
+from enum import Enum
 import typing
 
 
-@dataclass(frozen=True)
-class ComponentFrame:
-    component: str
-    frame: int
-    timestamp: str
-    reachable: bool
-    responseTime: float
-    cpu: float
+class Version(Enum):
+    V1 = 'v1',
+    V2 = 'v2',
 
+class TimeUnit(Enum):
+    MILLISECOND = 'ms'
+    SECOND = 's'
+    MINUTE = 'm'
+    HOUR = 'h'
+    DAY = 'd'
 
 @dataclass(frozen=True)
-class ComponentConfig:
+class TimeDetail:
+    value: int
+    unit: TimeUnit
+
+    def as_string(self):
+        return self.value + self.unit
+
+@dataclass(frozen=True)
+class Metric:
     id: str
-    name: str
-    baseUrl: str
-    statusEndpoint: str
-    frequency: str
-    systemId: str
-    ref: str
-    expectedTime: str
-    timeout: str
-    deleteAfter: str
+    endpoint: str
+    frequency: TimeDetail
+    expectedTime: TimeDetail
+    timeout: TimeDetail
+    deleteAfter: TimeDetail
     authToken: str
-
-
-@dataclass(frozen=True)
-class SystemConfig:
-    id: str
-    name: str
-    ref: str
-
-
-@dataclass(frozen=True)
-class System:
-    system: str
-    name: str
-    ref: str
-
+    baseUrl: str
 
 @dataclass(frozen=True)
 class Component:
-    component: str
+    id: str
     name: str
+    systemId: str
     baseUrl: str
-    statusEndpoint: str
-    system: str
     ref: str
-    expectedTime: str
-    timeout: str
-    frequency: str
     authToken: str
-
-
-@dataclass(frozen=True)
-class DtoComponentFrame:
-    id: int
-    timestamp: str
-    reachable: bool
-    responseTime: float
-    cpu: float
-
+    metrics: typing.Union[typing.List[Metric], None]
 
 @dataclass(frozen=True)
-class DtoSystem:
-    system: str
+class System:
+    id: str
     name: str
     ref: str
 
-
 @dataclass(frozen=True)
-class DtoFrameComment:
-    comment: int
-    startFrame: int
-    endFrame: int
-    commentText: str
-
-
-@dataclass(frozen=True)
-class DtoComponent:
-    name: str
-    frequency: str
-    system: str
-    ref: str
-    expectedTime: str
-    timeout: str
-    frames: typing.List[DtoComponentFrame]
-    comments: typing.List[DtoFrameComment]
-
-
-@dataclass(frozen=True)
-class FrameComment:
-    component: Component
-    comment: int
-    startFrame: int
-    endFrame: int
-    commentText: str
-
-
-@dataclass(frozen=True)
-class DtoMonitorData:
-    components: typing.List[DtoComponent]
-    systems: typing.List[DtoSystem]
-
-
-@dataclass(frozen=True)
-class ComponentComponentFrames:
-    component: Component
-    componentFrames: typing.List[ComponentFrame]
+class Config:
+    components: typing.List[Component]
+    systems: typing.List[System]
+    version: Version
