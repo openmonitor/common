@@ -20,7 +20,17 @@ class TimeDetail:
     unit: TimeUnit
 
     def as_string(self):
-        return self.value + self.unit
+        return self.value + self.unit.value
+
+    def as_ms(self):
+        h = {
+            TimeUnit.MILLISECOND: 1,
+            TimeUnit.SECOND: 60,
+            TimeUnit.MINUTE: 3600,
+            TimeUnit.HOUR: 216000,
+            TimeUnit.DAY: 5184000,
+        }
+        return int(self.value * h.get(self.unit))
 
 @dataclass(frozen=True)
 class Metric:
@@ -54,3 +64,12 @@ class Config:
     components: typing.List[Component]
     systems: typing.List[System]
     version: Version
+
+@dataclass(frozen=True)
+class Result:
+    metricId: str
+    componentId: str
+    value: typing.Union[str, None]
+    timeout: bool
+    timestamp: str
+    responseTime: int
