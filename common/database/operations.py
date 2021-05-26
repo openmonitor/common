@@ -26,8 +26,12 @@ class DatabaseOperations:
                 if components := self.connection.select_component_from_system_id(system_id=system.id):
                     # delete each component and its metrics
                     for c in components:
+                        self.connection.delete_result_from_component_id(component_id=c.id)
+                        self.logger.debug(f'deleting results with {c.id=}')
                         self.connection.delete_metric_by_component_id(component_id=c.id)
+                        self.logger.debug(f'deleting metrics with {c.id=}')
                         self.connection.delete_component(component_id=c.id)
+                        self.logger.debug(f'{c.id=} present, deleting')
                 # finally delete system
                 self.connection.delete_system(system_id=system.id)
 
@@ -51,3 +55,19 @@ class DatabaseOperations:
         res: model.Result,
     ):
         self.connection.insert_result(res=res)
+
+
+    def select_all_components(
+        self,
+    ):
+        return self.connection.select_all_components()
+
+    def select_all_systems(
+        self,
+    ):
+        return self.connection.select_all_systems()
+
+    def select_all_results(
+        self,
+    ):
+        return self.connection.select_all_results()

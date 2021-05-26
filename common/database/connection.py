@@ -130,6 +130,88 @@ class DatabaseConnection:
             ref=res[2],
         )
 
+    def select_all_systems(self) -> typing.List[model.System]:
+        statement = "SELECT * FROM system"
+
+        cur = self._execute(
+            statement=statement,
+            values=(),
+        )
+
+        try:
+            res = cur.fetchall()
+        except TypeError:
+            return None
+
+        if not res:
+            return None
+
+        systems: typing.List[model.System] = []
+        for s in res:
+            systems.append(model.System(
+                id=s[0],
+                name=s[1],
+                ref=s[2],
+            ))
+        return systems
+
+    def select_all_components(self) -> typing.List[model.Component]:
+        statement = "SELECT * FROM component"
+
+        cur = self._execute(
+            statement=statement,
+            values=(),
+        )
+
+        try:
+            res = cur.fetchall()
+        except TypeError:
+            return None
+
+        if not res:
+            return None
+
+        components: typing.List[model.Component] = []
+        for c in res:
+            components.append(model.Component(
+                id=c[0],
+                name=c[1],
+                baseUrl=c[2],
+                systemId=c[3],
+                ref=c[4],
+                authToken=c[5],
+                metrics=self.select_metrics_from_component(component_id=c[0]),
+            ))
+        return components
+
+    def select_all_results(self) -> typing.List[model.Result]:
+        statement = "SELECT * FROM result"
+
+        cur = self._execute(
+            statement=statement,
+            values=(),
+        )
+
+        try:
+            res = cur.fetchall()
+        except TypeError:
+            return None
+
+        if not res:
+            return None
+
+        results: typing.List[model.Result] = []
+        for r in res:
+            results.append(model.Result(
+                metricId=r[0],
+                componentId=r[1],
+                value=r[2],
+                timeout=r[3],
+                timestamp=str(r[4]),
+                responseTime=r[5],
+            ))
+        return results
+
     def select_component(
         self,
         component_id: str,
@@ -151,10 +233,10 @@ class DatabaseConnection:
         model.Component(
             id=res[0],
             name=res[1],
-            base=res[2],
-            sys=res[3],
+            baseUrl=res[2],
+            systemId=res[3],
             ref=res[4],
-            auth=res[5],
+            authToken=res[5],
             metrics=self.select_metrics_from_component(component_id=component_id),
         )
 
@@ -250,6 +332,20 @@ class DatabaseConnection:
     ):
         statement = "DELETE FROM metric " \
                     "WHERE ComponentId = %s"
+
+        values = (component_id,)
+
+        self._execute(
+            statement=statement,
+            values=values,
+        )
+
+    def delete_result_from_component_id(
+        self,
+        component_id: str,
+    ):
+        statement = "DELETE FROM result " \
+                    "WHERE componentId = %s"
 
         values = (component_id,)
 
