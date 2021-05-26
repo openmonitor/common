@@ -71,3 +71,25 @@ class DatabaseOperations:
         self,
     ):
         return self.connection.select_all_results()
+
+    def _build_delete_result_interval(
+        self,
+        delete_after: str,
+    ) -> str:
+        interval_translation = {
+            'm': 'minutes',
+            'h': 'hours',
+            'd': 'days',
+        }
+        interval = delete_after[:-1] + ' ' + delete_after[-1]
+        for k, v in interval_translation.items():
+            interval = interval.replace(k, v)
+        return interval
+
+    def delete_outdated_results(
+        self,
+        component_id: str,
+        metric_id: str,
+        delete_after: model.TimeDetail,
+    ):
+        self.connection.delete_outdated_results(delete_after.as_interval())

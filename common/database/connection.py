@@ -381,3 +381,16 @@ class DatabaseConnection:
             statement=statement,
             values=values,
         )
+
+    def delete_outdated_results(
+        self,
+        interval: str,
+    ):
+        stmt = 'DELETE FROM result WHERE timestamp < NOW() - INTERVAL %s'
+
+        values = (interval,)
+
+        self._execute(
+            statement=stmt,
+            values=values,
+        )

@@ -14,6 +14,20 @@ class TimeUnit(Enum):
     HOUR = 'h'
     DAY = 'd'
 
+class TimeUnitMilliseconds(Enum):
+    MILLISECOND = 1
+    SECOND = 60
+    MINUTE = 3600
+    HOUR = 216000
+    DAY = 5184000
+
+class TimeUnitPhoenic(Enum):
+    MILLISECOND = 'milliseconds'
+    SECOND = 'seconds'
+    MINUTE = 'minutes'
+    HOUR = 'hours'
+    DAY = 'days'
+
 @dataclass(frozen=True)
 class TimeDetail:
     value: int
@@ -22,15 +36,17 @@ class TimeDetail:
     def as_string(self):
         return self.value + self.unit.value
 
+    def _unit_to_phonetic_name(
+        self,
+        unit: TimeUnit,
+    ):
+        return TimeUnitPhoenic[unit.name].value
+
+    def as_interval(self):
+        return f'{self.value} {self._unit_to_phonetic_name(unit=self.unit)}'
+
     def as_ms(self):
-        h = {
-            TimeUnit.MILLISECOND: 1,
-            TimeUnit.SECOND: 60,
-            TimeUnit.MINUTE: 3600,
-            TimeUnit.HOUR: 216000,
-            TimeUnit.DAY: 5184000,
-        }
-        return int(self.value * h.get(self.unit))
+        return int(self.value * TimeUnitMilliseconds[self.unit.name].value)
 
 @dataclass(frozen=True)
 class Metric:
