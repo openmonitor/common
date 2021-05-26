@@ -226,11 +226,11 @@ class DatabaseConnection:
         )
 
         try:
-            res = cur.fetchone()[0]
+            res = cur.fetchone()
         except TypeError:
             return None
 
-        model.Component(
+        return model.Component(
             id=res[0],
             name=res[1],
             baseUrl=res[2],
@@ -372,10 +372,24 @@ class DatabaseConnection:
         self,
         res: model.Result,
     ):
-        statement = "INSERT INTO Result " \
+        statement = "INSERT INTO result " \
                     "VALUES (%s, %s, %s, %s, %s, %s)"
 
         values = (dataclasses.astuple(res))
+
+        self._execute(
+            statement=statement,
+            values=values,
+        )
+
+    def insert_comment(
+        self,
+        comment: model.Comment,
+    ):
+        statement = "INSERT INTO comment " \
+                    "VALUES (%s, %s, %s, %s, %s, %s)"
+
+        values = (dataclasses.astuple(comment))
 
         self._execute(
             statement=statement,

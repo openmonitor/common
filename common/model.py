@@ -89,3 +89,12 @@ class Result:
     timeout: bool
     timestamp: str
     responseTime: int
+
+@dataclass(frozen=True)
+class Comment:
+    metricId: str
+    componentId: str
+    comment: str
+    timestamp: str
+    startTimestamp: str
+    endTimestamp: typing.Union[str, None]
