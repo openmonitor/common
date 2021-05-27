@@ -62,6 +62,12 @@ class DatabaseOperator:
     ):
         self.connection.insert_result(res=res)
 
+    def insert_comment(
+        self,
+        comment: model.Comment,
+    ):
+        self.connection.insert_comment(comment=comment)
+
 
     def select_all_components(
         self,
@@ -91,11 +97,51 @@ class DatabaseOperator:
     ):
         self.connection.delete_outdated_results(delete_after.as_interval())
 
-    def insert_comment(
+    def update_comment(
         self,
-        comment: model.Comment,
+        old: model.Comment,
+        new: model.Comment,
     ):
-        self.connection.insert_comment(comment=comment)
+        self.connection.delete_comment(
+            metric_id=old.metricId,
+            component_id=old.componentId,
+            timestamp=old.timestamp,
+        )
+        self.connection.insert_comment(comment=new)
+
+    def delete_comment(
+        self,
+        component_id: str,
+        metric_id: str,
+        timestamp: str,
+    ):
+        self.connection.delete_comment(
+            metric_id=metric_id,
+            component_id=component_id,
+            timestamp=timestamp,
+        )
+
+    def select_comment(
+        self,
+        component_id: str,
+        metric_id: str,
+        timestamp: str,
+    ):
+        return self.connection.select_comment(
+            component_id=component_id,
+            metric_id=metric_id,
+            timestamp=timestamp,
+        )
+
+    def select_metric(
+        self,
+        component_id: str,
+        metric_id: str,
+    ) -> model.Metric:
+        return self.connection.select_metric(
+            component_id=component_id,
+            metric_id=metric_id,
+        )
 
     def select_component(
         self,

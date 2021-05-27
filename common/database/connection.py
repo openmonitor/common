@@ -242,11 +242,38 @@ class DatabaseConnection:
 
         return comments
 
+    def select_comment(
+        self,
+        component_id: str,
+        metric_id: str,
+        timestamp: str,
+    ) -> typing.Union[None, model.Comment]:
+        statement = "SELECT * FROM comment " \
+                    "WHERE metricId = %s AND componentId = %s AND timestamp = %s"
+        values = (metric_id, component_id, timestamp)
+
+        cur = self._execute(
+            statement=statement,
+            values=values,
+        )
+
+        if not (res := cur.fetchone()):
+            return None
+
+        return model.Comment(
+            metricId=res[0],
+            componentId=res[1],
+            comment=res[2],
+            timestamp=res[3],
+            startTimestamp=res[4],
+            endTimestamp=res[5],
+        )
+
     def select_metric(
         self,
         component_id: str,
         metric_id: str,
-    ):
+    ) -> typing.Union[None, model.Metric]:
         statement = "SELECT * FROM metric " \
                     "WHERE id = %s AND componentId = %s"
         values = (metric_id, component_id)
@@ -273,7 +300,7 @@ class DatabaseConnection:
     def select_component(
         self,
         component_id: str,
-    ):
+    ) -> typing.Union[None, model.Component]:
         statement = "SELECT * FROM component " \
                     "WHERE id = %s"
         values = (component_id,)
@@ -293,7 +320,7 @@ class DatabaseConnection:
             systemId=res[3],
             ref=res[4],
             authToken=res[5],
-            metrics=self.select_metrics_from_component(component_id=component_id),
+            metrics=self.select_metrics_from_component(component_id=res[0]),
         )
 
     def select_component_from_system_id(
@@ -432,6 +459,22 @@ class DatabaseConnection:
                     "WHERE Id = %s"
 
         values = (component_id,)
+
+        self._execute(
+            statement=statement,
+            values=values,
+        )
+
+    def delete_comment(
+        self,
+        component_id: str,
+        metric_id: str,
+        timestamp: str,
+    ):
+        statement = "DELETE FROM comment " \
+                    "WHERE metricId = %s AND componentId = %s AND timestamp = %s"
+
+        values = (metric_id, component_id, timestamp)
 
         self._execute(
             statement=statement,

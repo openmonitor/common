@@ -2,7 +2,7 @@ import typing
 import requests
 
 
-class Callable():
+class Callable:
     def __init__(
         self,
         callback: str
