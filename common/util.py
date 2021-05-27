@@ -1,7 +1,11 @@
 from copy import copy
 import logging
 import logging.config
+import re
 import sys
+
+from . import exceptions
+from . import model
 
 
 def urljoin(*parts):
@@ -103,3 +107,16 @@ def strip_time_str_to_int(
         if v:
             timeout_str = timeout_str.replace(k, '')
     return int(timeout_str)
+
+
+def parse_time_str_to_timedetail(
+    time_str :str,
+) -> model.TimeDetail:
+    regex = re.compile('([0-9]+)(ms|s|m|h|d)')
+    res = regex.match(time_str)
+    if not res:
+        raise exceptions.OpenmonitorConfigError('Unable to parse config', time_str=time_str)
+    return model.TimeDetail(
+        value=res[1],
+        unit=model.TimeUnit(res[2]),
+    )

@@ -4,7 +4,7 @@ from . import connection
 import common.model as model
 
 
-class DatabaseOperations:
+class DatabaseOperator:
     def __init__(
         self,
         connection: connection.DatabaseConnection,
@@ -26,12 +26,18 @@ class DatabaseOperations:
                 if components := self.connection.select_component_from_system_id(system_id=system.id):
                     # delete each component and its metrics
                     for c in components:
-                        self.connection.delete_result_from_component_id(component_id=c.id)
+                        self.logger.debug(f'deleting comments with {c.id=}')
+                        self.connection.delete_comment_from_component_id(component_id=c.id)
+
                         self.logger.debug(f'deleting results with {c.id=}')
-                        self.connection.delete_metric_by_component_id(component_id=c.id)
+                        self.connection.delete_result_from_component_id(component_id=c.id)
+
                         self.logger.debug(f'deleting metrics with {c.id=}')
-                        self.connection.delete_component(component_id=c.id)
+                        self.connection.delete_metric_by_component_id(component_id=c.id)
+
                         self.logger.debug(f'{c.id=} present, deleting')
+                        self.connection.delete_component(component_id=c.id)
+
                 # finally delete system
                 self.connection.delete_system(system_id=system.id)
 
@@ -72,6 +78,11 @@ class DatabaseOperations:
     ):
         return self.connection.select_all_results()
 
+    def select_all_comments(
+        self,
+    ):
+        return self.connection.select_all_comments()
+
     def delete_outdated_results(
         self,
         component_id: str,
@@ -91,3 +102,13 @@ class DatabaseOperations:
         component_id: str,
     ):
         return self.connection.select_component(component_id=component_id)
+
+    def select_metric(
+        self,
+        component_id: str,
+        metric_id: str,
+    ) -> model.Metric:
+        return self.connection.select_metric(
+            component_id=component_id,
+            metric_id=metric_id,
+        )

@@ -8,6 +8,7 @@ import psycopg2.extras
 
 try:
     import common.model as model
+    import common.util as commonutil
 except ModuleNotFoundError:
     print('common package not in python path or dependencies not installed')
 
@@ -212,6 +213,63 @@ class DatabaseConnection:
             ))
         return results
 
+    def select_all_comments(self) -> typing.List[model.Comment]:
+        statement = "SELECT * FROM comment"
+
+        cur = self._execute(
+            statement=statement,
+            values=(),
+        )
+
+        try:
+            res = cur.fetchall()
+        except TypeError:
+            return None
+
+        if not res:
+            return None
+
+        comments: typing.List[model.Comment] = []
+        for c in res:
+            comments.append(model.Comment(
+                metricId=c[0],
+                componentId=c[1],
+                comment=c[2],
+                timestamp=str(c[3]),
+                startTimestamp=str(c[4]),
+                endTimestamp=str(c[5]),
+            ))
+
+        return comments
+
+    def select_metric(
+        self,
+        component_id: str,
+        metric_id: str,
+    ):
+        statement = "SELECT * FROM metric " \
+                    "WHERE id = %s AND componentId = %s"
+        values = (metric_id, component_id)
+
+        cur = self._execute(
+            statement=statement,
+            values=values,
+        )
+
+        if not (res := cur.fetchone()):
+            return None
+
+        return model.Metric(
+            id=res[0],
+            endpoint=res[2],
+            frequency=commonutil.parse_time_str_to_timedetail(time_str=res[3]),
+            expectedTime=commonutil.parse_time_str_to_timedetail(time_str=res[4]),
+            timeout=commonutil.parse_time_str_to_timedetail(time_str=res[5]),
+            deleteAfter=commonutil.parse_time_str_to_timedetail(time_str=res[6]),
+            authToken=res[7],
+            baseUrl=res[8],
+        )
+
     def select_component(
         self,
         component_id: str,
@@ -225,9 +283,7 @@ class DatabaseConnection:
             values=values,
         )
 
-        try:
-            res = cur.fetchone()
-        except TypeError:
+        if not (res := cur.fetchone()):
             return None
 
         return model.Component(
@@ -302,10 +358,10 @@ class DatabaseConnection:
             metrics.append(model.Metric(
                 id=m[0],
                 endpoint=m[2],
-                frequency=m[3],
-                expectedTime=m[4],
-                timeout=m[5],
-                deleteAfter=m[6],
+                frequency=commonutil.parse_time_str_to_timedetail(time_str=m[3]),
+                expectedTime=commonutil.parse_time_str_to_timedetail(time_str=m[4]),
+                timeout=commonutil.parse_time_str_to_timedetail(time_str=m[5]),
+                deleteAfter=commonutil.parse_time_str_to_timedetail(time_str=m[6]),
                 authToken=m[7],
                 baseUrl=m[8],
             ))
@@ -345,6 +401,20 @@ class DatabaseConnection:
         component_id: str,
     ):
         statement = "DELETE FROM result " \
+                    "WHERE componentId = %s"
+
+        values = (component_id,)
+
+        self._execute(
+            statement=statement,
+            values=values,
+        )
+
+    def delete_comment_from_component_id(
+        self,
+        component_id: str,
+    ):
+        statement = "DELETE FROM comment " \
                     "WHERE componentId = %s"
 
         values = (component_id,)
