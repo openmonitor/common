@@ -1,3 +1,4 @@
+import typing
 import requests
 
 
@@ -13,3 +14,9 @@ class Callable():
 
     def call_by_post(self):
         return requests.post(self.callback)
+
+    def call_by_callable(
+        self,
+        callable: typing.Callable
+    ):
+        callable()
