@@ -80,6 +80,7 @@ class Config:
     components: typing.List[Component]
     systems: typing.List[System]
     version: Version
+    cacheCallback: str
 
 @dataclass(frozen=True)
 class Result:
