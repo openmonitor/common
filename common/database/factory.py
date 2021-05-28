@@ -1,5 +1,6 @@
 import logging
 import os
+import time
 
 import psycopg2
 import psycopg2.extras
@@ -28,11 +29,16 @@ class DatabaseConnectionFactory:
 
     def make_connection(self):
         logger.debug('making database connection')
-        return connection.DatabaseConnection(
-            psycopg2.connect(
-                database=self.database,
-                user=self.user,
-                password=self.password,
-                host=self.host,
-                port=self.port,
-        ))
+        while True:
+            try:
+                return connection.DatabaseConnection(
+                    psycopg2.connect(
+                        database=self.database,
+                        user=self.user,
+                        password=self.password,
+                        host=self.host,
+                        port=self.port,
+                ))
+            except psycopg2.OperationalError:
+                logger.warn('unable to connect to database, retry in 3 seconds...')
+                time.sleep(3)
