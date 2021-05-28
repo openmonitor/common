@@ -4,8 +4,8 @@ import typing
 
 
 class Version(Enum):
-    V1 = 'v1',
-    V2 = 'v2',
+    V1 = 'v1'
+    V2 = 'v2'
 
 class TimeUnit(Enum):
     MILLISECOND = 'ms'
@@ -34,7 +34,7 @@ class TimeDetail:
     unit: TimeUnit
 
     def as_string(self):
-        return self.value + self.unit.value
+        return str(self.value) + self.unit.value
 
     def _unit_to_phonetic_name(
         self,
